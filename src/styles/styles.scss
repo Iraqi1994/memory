@@ -1,35 +1,15 @@
-body {
-  height: 100vh;
-  background-color: blue;
+@font-face {
+  font-family: "Red Rose";
+  src: url("/fonts/RedRose-VariableFont_wght.ttf") format("truetype");
 }
 
-.card {
-  height: 100px;
-  aspect-ratio: 1/1;
-  background-color: transparent;
-  border: none;
-
-  &__inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: all 0.3s ease-in-out;
-  }
-
-  &__face {
-    position: absolute;
-    inset: 0;
-    background-color: red;
-    backface-visibility: hidden;
-
-    &--back {
-      transform: rotateY(180deg);
-      background-color: green;
-    }
-  }
-
-  &.is-flipped .card__inner {
-    transform: rotateY(180deg);
-  }
+body {
+  height: 100vh;
+  background-color: #303131;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #ffffff;
+  font-family: "Red Rose", sans-serif;
 }
