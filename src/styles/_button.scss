@@ -1,0 +1,45 @@
+.button {
+  gap: 60px;
+  padding: 24px 32px;
+  margin-top: 64px;
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0ea6e;
+  color: #303131;
+  font-family: "Red Rose", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border: none;
+  text-decoration: none;
+
+  &__icon {
+    &--start {
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &:hover {
+    transform: scale(1.1);
+
+    .button__icon--start {
+      transform: rotate(-25deg);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &:hover {
+      transform: none;
+
+      .button__icon--start {
+        transform: none;
+      }
+    }
+  }
+}
