@@ -4,8 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Memory</title>
+    <link rel="icon" type="image/svg+xml" href="/img/gaming-theme/card-back-gaming-theme.svg" />
   </head>
   <body>
-    <h1>Test</h1>
+    <h1>Settings</h1>
+
+    <form>
+      <legend>
+        <img src="/img/palette.svg" alt="" />
+        Game themes
+      </legend>
+
+      <label>
+        <input type="radio" name="theme" value="codeTheme" />
+        Code vibes theme
+      </label>
+
+      <label>
+        <input type="radio" name="theme" value="gamingTheme" />
+        Gaming theme
+      </label>
+    </form>
+
+    <form>
+      <legend>
+        <img src="/img/chess-pawn.svg" alt="" />
+        Choose Player
+      </legend>
+
+      <label>
+        <input type="radio" name="player" value="blue" />
+        Blue
+      </label>
+
+      <label>
+        <input type="radio" name="player" value="orange" />
+        Orange
+      </label>
+    </form>
+
+    <form>
+      <legend>
+        <img src="/img/board.svg" alt="" />
+        Board Size
+      </legend>
+
+      <label>
+        <input type="radio" name="boardSize" value="16" />
+        16 cards
+      </label>
+
+      <label>
+        <input type="radio" name="boardSize" value="24" />
+        24 cards
+      </label>
+
+      <label>
+        <input type="radio" name="boardSize" value="36" />
+        36 cards
+      </label>
+    </form>
+
+    <script type="module" src="../scripts/settings.ts"></script>
   </body>
 </html>

@@ -1,0 +1,103 @@
+h1 {
+  font-size: 54px;
+  position: relative;
+  padding-bottom: 16px;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 23px;
+    margin-top: 8px;
+    background-image: url("/img/settings-underline.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+  }
+}
+
+form {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  legend {
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    width: fit-content;
+    position: relative;
+
+    &:hover {
+      font-weight: bold;
+
+      &::after {
+        content: "";
+        display: block;
+        width: 48px;
+        height: 32px;
+        margin-left: 8px;
+        background-image: url("/img/checked-line.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+
+    &:has(input[type="radio"]:checked) {
+      font-weight: bold;
+
+      &::after {
+        content: "";
+        display: block;
+        width: 48px;
+        height: 32px;
+        margin-left: 8px;
+        background-image: url("/img/checked-line.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+  }
+
+  input[type="radio"] {
+    cursor: pointer;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #303131;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+
+    &:checked {
+      background-color: #ffffff;
+      border: 2px solid #303131;
+    }
+
+    &:checked::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #303131;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import "./styles/styles.scss";
-import "./styles/_button.scss";
-import "./styles/_landingPage.scss";
+import "./styles/components/_button.scss";
+import "./styles/landingPage.scss";
 import { Card } from "./models/card.class";
 
 init();
