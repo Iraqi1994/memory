@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 // Type declarations for style imports
 declare module "*.scss" {
   const content: { [className: string]: string };
