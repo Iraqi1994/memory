@@ -6,6 +6,8 @@ export class Card {
   constructor(
     public id: string,
     public value: string,
+    public frontImagePath: string,
+    public backImagePath: string,
   ) {}
 
   get isFlipped(): boolean {
@@ -44,9 +46,17 @@ export class Card {
 
     const front = document.createElement("div");
     front.className = "card__face card__face--front";
+    const frontImg = document.createElement("img");
+    frontImg.src = this.backImagePath;
+    frontImg.alt = "card back";
+    front.appendChild(frontImg);
 
     const back = document.createElement("div");
     back.className = "card__face card__face--back";
+    const backImg = document.createElement("img");
+    backImg.src = this.frontImagePath;
+    backImg.alt = this.value;
+    back.appendChild(backImg);
 
     inner.appendChild(front);
     inner.appendChild(back);

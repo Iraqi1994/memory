@@ -3,35 +3,9 @@ import "../styles/settings.scss";
 import "../styles/styles.scss";
 
 const themeRadios = document.querySelectorAll<HTMLInputElement>('input[name="theme"]');
-const previewImage = document.getElementById("preview-image") as HTMLImageElement;
-
-const updateThemePreview = (theme: string) => {
-  if (theme === "codeTheme") {
-    previewImage.src = import.meta.env.BASE_URL + "img/code-theme-preview.svg";
-    previewImage.style.display = "block";
-  } else if (theme === "gamingTheme") {
-    previewImage.src = import.meta.env.BASE_URL + "img/gaming-theme-preview.svg";
-    previewImage.style.display = "block";
-  }
-};
-
-themeRadios.forEach((radio) => {
-  radio.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    updateThemePreview(target.value);
-  });
-});
-
-const checkedTheme = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
-if (checkedTheme) {
-  updateThemePreview(checkedTheme.value);
-} else {
-  updateThemePreview("codeTheme");
-}
-
 const playerRadios = document.querySelectorAll<HTMLInputElement>('input[name="player"]');
 const boardSizeRadios = document.querySelectorAll<HTMLInputElement>('input[name="boardSize"]');
-
+const previewImage = document.getElementById("preview-image") as HTMLImageElement;
 const summaryTheme = document.getElementById("summary-theme") as HTMLSpanElement;
 const summaryPlayer = document.getElementById("summary-player") as HTMLSpanElement;
 const summaryBoardSize = document.getElementById("summary-boardSize") as HTMLSpanElement;
@@ -59,6 +33,16 @@ const labelMappings = {
   },
 };
 
+const updateThemePreview = (theme: string) => {
+  if (theme === "codeTheme") {
+    previewImage.src = import.meta.env.BASE_URL + "img/code-theme-preview.svg";
+    previewImage.style.display = "block";
+  } else if (theme === "gamingTheme") {
+    previewImage.src = import.meta.env.BASE_URL + "img/gaming-theme-preview.svg";
+    previewImage.style.display = "block";
+  }
+};
+
 const updateSummary = () => {
   if (selections.theme) {
     summaryTheme.textContent = labelMappings.theme[selections.theme as keyof typeof labelMappings.theme];
@@ -83,9 +67,30 @@ const validateSelections = () => {
   }
 };
 
+const saveSelections = () => {
+  localStorage.setItem("gameSettings", JSON.stringify(selections));
+};
+
+const initializeSelections = () => {
+  const checkedTheme = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
+  const checkedPlayer = document.querySelector<HTMLInputElement>('input[name="player"]:checked');
+  const checkedBoardSize = document.querySelector<HTMLInputElement>('input[name="boardSize"]:checked');
+
+  if (checkedTheme) {
+    selections.theme = checkedTheme.value;
+    updateThemePreview(checkedTheme.value);
+  } else {
+    updateThemePreview("codeTheme");
+  }
+  if (checkedPlayer) selections.player = checkedPlayer.value;
+  if (checkedBoardSize) selections.boardSize = checkedBoardSize.value;
+  updateSummary();
+};
+
 themeRadios.forEach((radio) => {
   radio.addEventListener("change", (event) => {
     const target = event.target as HTMLInputElement;
+    updateThemePreview(target.value);
     selections.theme = target.value;
     updateSummary();
   });
@@ -107,11 +112,8 @@ boardSizeRadios.forEach((radio) => {
   });
 });
 
-const checkedPlayer = document.querySelector<HTMLInputElement>('input[name="player"]:checked');
-const checkedBoardSize = document.querySelector<HTMLInputElement>('input[name="boardSize"]:checked');
+startButton.addEventListener("click", () => {
+  saveSelections();
+});
 
-if (checkedTheme) selections.theme = checkedTheme.value;
-if (checkedPlayer) selections.player = checkedPlayer.value;
-if (checkedBoardSize) selections.boardSize = checkedBoardSize.value;
-
-updateSummary();
+initializeSelections();

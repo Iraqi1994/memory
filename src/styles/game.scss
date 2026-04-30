@@ -1,0 +1,122 @@
+$color-background: #303131;
+$color-blue: #2bb1ff;
+$color-orange: #f58e39;
+$color-white: #ffffff;
+$color-player-bg: #86e9d633;
+$color-button-bg: #86e9d633;
+$color-button-border: #4dd5bc;
+$color-button-glow: #4dd5bc;
+
+$spacing-xs: 8px;
+$spacing-md: 16px;
+$spacing-lg: 32px;
+
+$font-size: 24px;
+$font-size-current: 26px;
+
+$scale-icon: 1.2;
+
+$transition-duration: 0.15s;
+
+body {
+  background-color: $color-background;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: $spacing-lg $spacing-lg;
+}
+
+.player-container {
+  display: flex;
+  gap: $spacing-lg;
+  font-size: $font-size;
+  font-weight: bold;
+  background-color: $color-player-bg;
+  padding: $spacing-md $spacing-lg;
+}
+
+.player {
+  display: flex;
+  gap: $spacing-xs;
+
+  &-blue {
+    color: $color-blue;
+  }
+
+  &-orange {
+    color: $color-orange;
+  }
+}
+
+.current-player {
+  color: $color-white;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  font-size: $font-size-current;
+
+  > img {
+    scale: $scale-icon;
+  }
+}
+
+.button {
+  color: $color-white;
+  font-size: $font-size;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-md $spacing-lg;
+  background-color: $color-button-bg;
+  border: 1px solid $color-button-border;
+  cursor: pointer;
+  transition: box-shadow $transition-duration ease-in-out;
+
+  &:hover {
+    box-shadow:
+      0 0 20px $color-button-glow,
+      0 0 30px $color-button-glow;
+  }
+}
+
+#field {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 4), auto);
+  justify-content: center;
+  padding: $spacing-lg;
+}
+
+.game-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+
+  &--visible {
+    display: flex;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__title {
+    font-size: 64px;
+    font-weight: bold;
+    color: $color-white;
+  }
+
+  &__scores {
+    font-size: $font-size;
+    color: $color-white;
+  }
+}

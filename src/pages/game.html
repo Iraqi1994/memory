@@ -3,11 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/img/gaming-theme/card-back-gaming-theme.svg" />
     <title>Memory</title>
   </head>
   <body>
-    <h1>TEST</h1>
+    <header>
+      <div class="player-container">
+        <div class="player player-blue">
+          <img src="/img/code-theme/blue-code-theme.svg" alt="Blue Player" />
+          <div>Blue</div>
+          <div id="scoreBlue">0</div>
+        </div>
+        <div class="player player-orange">
+          <img src="/img/code-theme/orange-code-theme.svg" alt="Orange Player" />
+          <div>Orange</div>
+          <div id="scoreOrange">0</div>
+        </div>
+      </div>
+      <div class="current-player">
+        <span>Current Player: </span>
+        <img id="currentPlayerImg" src="/img/code-theme/blue-code-theme.svg" alt="Blue Player" />
+      </div>
+      <button class="button"><img src="/img/exit-game.svg" alt="Exit Game" /> Exit Game</button>
+    </header>
     <section id="field"></section>
-    <script type="module" src="/src/main.ts"></script>
+    <div class="game-overlay" id="gameOverlay">
+      <div class="game-overlay__content">
+        <div class="game-overlay__title" id="overlayTitle"></div>
+        <div class="game-overlay__scores" id="overlayScores"></div>
+        <a href="../pages/settings.html" class="button">Play Again</a>
+      </div>
+    </div>
+    <script type="module" src="../scripts/game.ts"></script>
   </body>
 </html>

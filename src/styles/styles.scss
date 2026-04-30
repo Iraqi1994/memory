@@ -3,6 +3,8 @@
   src: url("/fonts/RedRose-VariableFont_wght.ttf") format("truetype");
 }
 
+@import "./components/card";
+
 body {
   height: 100vh;
   font-family: "Red Rose", sans-serif;
