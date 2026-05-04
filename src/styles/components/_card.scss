@@ -1,9 +1,11 @@
 .card {
-  height: 120px;
-  aspect-ratio: 1/1;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 100px;
+  height: 100px;
 
   &__inner {
     position: relative;
@@ -19,13 +21,14 @@
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    pointer-events: none;
 
     img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 8px;
+      pointer-events: auto;
     }
 
     &--back {

@@ -1,9 +1,14 @@
+@import "./components/card";
+
 @font-face {
   font-family: "Red Rose";
   src: url("/fonts/RedRose-VariableFont_wght.ttf") format("truetype");
 }
 
-@import "./components/card";
+@font-face {
+  font-family: "Orbitron";
+  src: url("/fonts/Orbitron-VariableFont_wght.ttf") format("truetype");
+}
 
 body {
   height: 100vh;

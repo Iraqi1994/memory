@@ -71,6 +71,20 @@ const saveSelections = () => {
   localStorage.setItem("gameSettings", JSON.stringify(selections));
 };
 
+const resetSettings = () => {
+  themeRadios.forEach((radio) => (radio.checked = false));
+  playerRadios.forEach((radio) => (radio.checked = false));
+  boardSizeRadios.forEach((radio) => (radio.checked = false));
+  selections.theme = null;
+  selections.player = null;
+  selections.boardSize = null;
+  summaryTheme.textContent = "Theme";
+  summaryPlayer.textContent = "Player";
+  summaryBoardSize.textContent = "Board Size";
+  previewImage.style.display = "none";
+  startButton.classList.add("button--disabled");
+};
+
 const initializeSelections = () => {
   const checkedTheme = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
   const checkedPlayer = document.querySelector<HTMLInputElement>('input[name="player"]:checked');
@@ -114,6 +128,7 @@ boardSizeRadios.forEach((radio) => {
 
 startButton.addEventListener("click", () => {
   saveSelections();
+  resetSettings();
 });
 
 initializeSelections();

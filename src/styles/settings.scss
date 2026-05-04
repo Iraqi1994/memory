@@ -109,37 +109,28 @@ form {
     font-size: 20px;
     width: fit-content;
     position: relative;
+    font-weight: bold;
 
-    &:hover {
-      font-weight: bold;
-
-      &::after {
-        content: "";
-        display: block;
-        width: 48px;
-        height: 32px;
-        margin-left: 8px;
-        background-image: url("/img/checked-line.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+    &:not(:hover):not(:has(input[type="radio"]:checked)) {
+      font-weight: normal;
     }
 
-    &:has(input[type="radio"]:checked) {
-      font-weight: bold;
+    &::after {
+      content: "";
+      display: block;
+      width: 48px;
+      height: 32px;
+      margin-left: 8px;
+      background-image: url("/img/checked-line.svg");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0;
+    }
 
-      &::after {
-        content: "";
-        display: block;
-        width: 48px;
-        height: 32px;
-        margin-left: 8px;
-        background-image: url("/img/checked-line.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
+    &:hover::after,
+    &:has(input[type="radio"]:checked)::after {
+      opacity: 1;
     }
   }
 

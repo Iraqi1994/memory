@@ -70,6 +70,13 @@ let scoreOrangeEl: HTMLElement | null = null;
 let overlay: HTMLElement | null = null;
 let overlayTitle: HTMLElement | null = null;
 let overlayScores: HTMLElement | null = null;
+let playerBlueImg: HTMLImageElement | null = null;
+let playerOrangeImg: HTMLImageElement | null = null;
+let exitButton: HTMLButtonElement | null = null;
+let exitButtonImg: HTMLImageElement | null = null;
+let exitPopupBackdrop: HTMLElement | null = null;
+let exitPopup: HTMLElement | null = null;
+let backToGameButton: HTMLButtonElement | null = null;
 
 const base = import.meta.env.BASE_URL;
 
@@ -90,6 +97,13 @@ function initDOMElements(): void {
   overlay = document.querySelector<HTMLElement>("#gameOverlay");
   overlayTitle = document.querySelector<HTMLElement>("#overlayTitle");
   overlayScores = document.querySelector<HTMLElement>("#overlayScores");
+  playerBlueImg = document.querySelector<HTMLImageElement>(".player-blue img");
+  playerOrangeImg = document.querySelector<HTMLImageElement>(".player-orange img");
+  exitButton = document.querySelector<HTMLButtonElement>("header .button");
+  exitButtonImg = exitButton?.querySelector<HTMLImageElement>("img") ?? null;
+  exitPopupBackdrop = document.querySelector<HTMLElement>("#exitPopupBackdrop");
+  exitPopup = document.querySelector<HTMLElement>("#exitPopup");
+  backToGameButton = document.querySelector<HTMLButtonElement>("#backToGameButton");
 }
 
 function loadSettings(): void {
@@ -122,10 +136,33 @@ function renderCards(): void {
   cards.forEach((card) => fieldRef!.appendChild(card.render()));
 }
 
-function updateCurrentPlayerDisplay(): void {
-  if (!currentPlayerImg) return;
+function updatePlayerIcons(): void {
+  if (!settings) return;
 
-  currentPlayerImg.src = `${base}img/code-theme/${currentPlayer}-code-theme.svg`;
+  const isGaming = settings.theme === "gamingTheme";
+  const themeFolder = isGaming ? "gaming-theme" : "code-theme";
+  const themeSuffix = isGaming ? "gaming-theme" : "code-theme";
+
+  if (playerBlueImg) {
+    playerBlueImg.src = `${base}img/${themeFolder}/blue-${themeSuffix}.svg`;
+  }
+  if (playerOrangeImg) {
+    playerOrangeImg.src = `${base}img/${themeFolder}/orange-${themeSuffix}.svg`;
+  }
+  if (currentPlayerImg) {
+    currentPlayerImg.src = `${base}img/${themeFolder}/${currentPlayer}-${themeSuffix}.svg`;
+    currentPlayerImg.alt = currentPlayer === "blue" ? "Blue Player" : "Orange Player";
+  }
+}
+
+function updateCurrentPlayerDisplay(): void {
+  if (!currentPlayerImg || !settings) return;
+
+  const isGaming = settings.theme === "gamingTheme";
+  const themeFolder = isGaming ? "gaming-theme" : "code-theme";
+  const themeSuffix = isGaming ? "gaming-theme" : "code-theme";
+
+  currentPlayerImg.src = `${base}img/${themeFolder}/${currentPlayer}-${themeSuffix}.svg`;
   currentPlayerImg.alt = currentPlayer === "blue" ? "Blue Player" : "Orange Player";
 }
 
@@ -174,6 +211,55 @@ function showOverlay(): void {
   overlay.classList.add("game-overlay--visible");
 }
 
+function showExitPopup(): void {
+  if (!exitPopupBackdrop || !exitPopup) return;
+  exitPopup.classList.remove("exit-popup--slide-out");
+  exitPopupBackdrop.classList.add("exit-popup-backdrop--visible");
+  exitPopup.classList.add("exit-popup--slide-in");
+}
+
+function hideExitPopup(): void {
+  if (!exitPopupBackdrop || !exitPopup) return;
+  exitPopup.classList.remove("exit-popup--slide-in");
+  exitPopup.classList.add("exit-popup--slide-out");
+  exitPopup.addEventListener(
+    "animationend",
+    () => {
+      exitPopupBackdrop!.classList.remove("exit-popup-backdrop--visible");
+    },
+    { once: true },
+  );
+}
+
+function setupExitPopup(): void {
+  if (!exitButton || !backToGameButton || !exitPopupBackdrop) return;
+  exitButton.addEventListener("click", showExitPopup);
+  backToGameButton.addEventListener("click", hideExitPopup);
+  exitPopupBackdrop.addEventListener("click", (event) => {
+    if (event.target === exitPopupBackdrop) hideExitPopup();
+  });
+}
+
+function setupExitButtonHover(): void {
+  if (!exitButton || !exitButtonImg || !settings) return;
+
+  const isGaming = settings.theme === "gamingTheme";
+  const defaultIcon = `${base}img/exit-game.svg`;
+  const hoverIcon = isGaming ? `${base}img/exit-game-red.svg` : `${base}img/exit-game.svg`;
+
+  exitButton.addEventListener("mouseenter", () => {
+    if (exitButtonImg) {
+      exitButtonImg.src = hoverIcon;
+    }
+  });
+
+  exitButton.addEventListener("mouseleave", () => {
+    if (exitButtonImg) {
+      exitButtonImg.src = defaultIcon;
+    }
+  });
+}
+
 function handleCardClick(event: Event): void {
   if (isLocked) return;
 
@@ -201,14 +287,16 @@ function handleCardClick(event: Event): void {
 function init(): void {
   loadSettings();
   if (!settings) return;
-
   initDOMElements();
   if (!fieldRef) return;
-
+  document.body.dataset.theme = settings.theme;
   currentPlayer = settings.player;
   createCards();
   renderCards();
+  updatePlayerIcons();
   updateCurrentPlayerDisplay();
+  setupExitButtonHover();
+  setupExitPopup();
   fieldRef.addEventListener("click", handleCardClick);
 }
 

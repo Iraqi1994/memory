@@ -27,6 +27,8 @@ header {
   justify-content: space-between;
   align-items: center;
   margin: $spacing-lg $spacing-lg;
+  padding: $spacing-md $spacing-lg;
+  border-radius: 10px;
 }
 
 .player-container {
@@ -36,6 +38,7 @@ header {
   font-weight: bold;
   background-color: $color-player-bg;
   padding: $spacing-md $spacing-lg;
+  border-radius: 10px;
 }
 
 .player {
@@ -66,12 +69,15 @@ header {
 .button {
   color: $color-white;
   font-size: $font-size;
+  font-weight: bold;
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: $spacing-xs;
   padding: $spacing-md $spacing-lg;
   background-color: $color-button-bg;
   border: 1px solid $color-button-border;
+  border-radius: 10px;
   cursor: pointer;
   transition: box-shadow $transition-duration ease-in-out;
 
@@ -85,6 +91,7 @@ header {
 #field {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 4), auto);
+  gap: $spacing-xs;
   justify-content: center;
   padding: $spacing-lg;
 }
@@ -118,5 +125,150 @@ header {
   &__scores {
     font-size: $font-size;
     color: $color-white;
+  }
+}
+
+body[data-theme="gamingTheme"] {
+  background-color: #294f60;
+  font-family: "Orbitron", sans-serif;
+
+  header {
+    background-color: #545d74;
+    height: 100px;
+    font-weight: bold;
+    margin-top: 0;
+  }
+
+  .player-container {
+    background-color: #ffffff;
+  }
+
+  .player-name {
+    display: none;
+  }
+
+  #scoreBlue,
+  #scoreOrange {
+    font-size: 30px;
+  }
+
+  .button {
+    border-color: #e71c4f;
+    background-color: #605974;
+
+    &:hover {
+      border-width: 3px;
+      box-shadow: none;
+    }
+  }
+
+  .button--inverted {
+    background-color: #e71c4f;
+    border-color: #e71c4f;
+    color: $color-white;
+
+    &:hover {
+      border-width: 1px;
+      box-shadow: none;
+    }
+  }
+
+  .exit-popup {
+    background-color: $color-white;
+
+    &__question {
+      color: #294f5f;
+    }
+
+    &__buttons .button:not(.button--inverted) {
+      color: #e71c4f;
+      background-color: #f0e5ee;
+      border-color: #e71c4f;
+    }
+  }
+
+  .card {
+    width: 105px;
+    height: 120px;
+  }
+}
+
+@keyframes exitPopupSlideIn {
+  from {
+    transform: translateY(-150vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes exitPopupSlideOut {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-150vh);
+  }
+}
+
+.exit-popup-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+
+  &--visible {
+    display: flex;
+  }
+}
+
+.exit-popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-lg;
+  background-color: $color-white;
+  border-radius: 12px;
+  padding: $spacing-lg;
+  transform: translateY(-150vh);
+
+  &--slide-in {
+    animation: exitPopupSlideIn 0.4s ease forwards;
+  }
+
+  &--slide-out {
+    animation: exitPopupSlideOut 0.4s ease forwards;
+  }
+
+  &__question {
+    font-size: $font-size;
+    color: $color-background;
+    margin: 0;
+    font-weight: bold;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: $spacing-md;
+
+    .button:not(.button--inverted) {
+      color: $color-button-border;
+    }
+  }
+}
+
+.button--inverted {
+  background-color: $color-button-border;
+  border-color: $color-button-border;
+  color: $color-background;
+
+  &:hover {
+    box-shadow:
+      0 0 20px $color-button-glow,
+      0 0 30px $color-button-glow;
   }
 }
