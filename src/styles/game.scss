@@ -100,7 +100,7 @@ header {
   display: none;
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #303131;
   justify-content: center;
   align-items: center;
   z-index: 100;
@@ -116,21 +116,54 @@ header {
     gap: $spacing-lg;
   }
 
-  &__title {
-    font-size: 64px;
+  &__top-img {
+    position: absolute;
+    top: 0;
+    height: 220px;
+  }
+
+  &__subtitle {
+    font-size: 40px;
     font-weight: bold;
     color: $color-white;
   }
 
-  &__scores {
-    font-size: $font-size;
+  &__title {
+    font-size: 60px;
+    font-weight: bold;
     color: $color-white;
+
+    &--blue {
+      color: #2bb1ff;
+    }
+
+    &--orange {
+      color: #f58e39;
+    }
+  }
+
+  &__winner-img {
+    height: 160px;
   }
 }
 
 body[data-theme="gamingTheme"] {
   background-color: #294f60;
   font-family: "Orbitron", sans-serif;
+
+  .game-overlay {
+    background-color: #294f5f;
+
+    &__title {
+      &--blue {
+        color: #2298db;
+      }
+
+      &--orange {
+        color: #ea6900;
+      }
+    }
+  }
 
   header {
     background-color: #545d74;

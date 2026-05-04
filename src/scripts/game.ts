@@ -69,7 +69,9 @@ let scoreBlueEl: HTMLElement | null = null;
 let scoreOrangeEl: HTMLElement | null = null;
 let overlay: HTMLElement | null = null;
 let overlayTitle: HTMLElement | null = null;
-let overlayScores: HTMLElement | null = null;
+let overlaySubtitle: HTMLElement | null = null;
+let overlayTopImg: HTMLImageElement | null = null;
+let overlayWinnerImg: HTMLImageElement | null = null;
 let playerBlueImg: HTMLImageElement | null = null;
 let playerOrangeImg: HTMLImageElement | null = null;
 let exitButton: HTMLButtonElement | null = null;
@@ -96,7 +98,9 @@ function initDOMElements(): void {
   scoreOrangeEl = document.querySelector<HTMLElement>("#scoreOrange");
   overlay = document.querySelector<HTMLElement>("#gameOverlay");
   overlayTitle = document.querySelector<HTMLElement>("#overlayTitle");
-  overlayScores = document.querySelector<HTMLElement>("#overlayScores");
+  overlaySubtitle = document.querySelector<HTMLElement>("#overlaySubtitle");
+  overlayTopImg = document.querySelector<HTMLImageElement>("#overlayTopImg");
+  overlayWinnerImg = document.querySelector<HTMLImageElement>("#overlayWinnerImg");
   playerBlueImg = document.querySelector<HTMLImageElement>(".player-blue img");
   playerOrangeImg = document.querySelector<HTMLImageElement>(".player-orange img");
   exitButton = document.querySelector<HTMLButtonElement>("header .button");
@@ -197,17 +201,47 @@ function handleMismatch(): void {
 }
 
 function showOverlay(): void {
-  if (!overlay || !overlayTitle || !overlayScores) return;
+  if (!overlay || !overlayTitle || !settings) return;
 
-  if (scores.blue > scores.orange) {
-    overlayTitle.textContent = "BLUE WINS!";
-  } else if (scores.orange > scores.blue) {
-    overlayTitle.textContent = "ORANGE WINS!";
-  } else {
-    overlayTitle.textContent = "DRAW";
+  const isGaming = settings.theme === "gamingTheme";
+  const isDraw = scores.blue === scores.orange;
+  const winner = scores.blue > scores.orange ? "blue" : "orange";
+
+  if (overlaySubtitle) {
+    overlaySubtitle.style.display = isDraw ? "none" : "";
   }
 
-  overlayScores.textContent = `Blue ${scores.blue} – ${scores.orange} Orange`;
+  overlayTitle.classList.remove("game-overlay__title--blue", "game-overlay__title--orange");
+
+  if (isDraw) {
+    overlayTitle.textContent = "IT'S A DRAW!";
+    if (overlayTopImg) overlayTopImg.style.display = "none";
+    if (overlayWinnerImg) overlayWinnerImg.style.display = "none";
+  } else {
+    overlayTitle.textContent = `${winner.toUpperCase()} PLAYER`;
+    overlayTitle.classList.add(`game-overlay__title--${winner}`);
+
+    if (isGaming) {
+      if (overlayTopImg) overlayTopImg.style.display = "none";
+      if (overlayWinnerImg) {
+        overlayWinnerImg.src = `${base}img/gaming-theme/trophy.svg`;
+        overlayWinnerImg.alt = "Trophy";
+        overlayWinnerImg.style.display = "";
+      }
+    } else {
+      if (overlayTopImg) {
+        overlayTopImg.src = `${base}img/code-theme/confetti.svg`;
+        overlayTopImg.alt = "Confetti";
+        overlayTopImg.style.display = "";
+      }
+      if (overlayWinnerImg) {
+        overlayWinnerImg.src = `${base}img/code-theme/${winner}-winner-code-theme.svg`;
+        overlayWinnerImg.alt = `${winner} winner`;
+        overlayWinnerImg.style.display = "";
+      }
+    }
+  }
+
   overlay.classList.add("game-overlay--visible");
 }
 
