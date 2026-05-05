@@ -151,11 +151,17 @@ const renderCards = (): void => {
 /** Sets the theme-correct icon for both player avatars and the current-player indicator. */
 const updatePlayerIcons = (): void => {
   if (!settings) return;
-
   const isGaming = settings.theme === "gamingTheme";
   const themeFolder = isGaming ? "gaming-theme" : "code-theme";
   const themeSuffix = isGaming ? "gaming-theme" : "code-theme";
+  applyPlayerIconSrcs(themeFolder, themeSuffix);
+};
 
+/** Applies theme-correct image sources to the blue player, orange player, and current-player indicator elements.
+ * @param themeFolder - The image sub-folder for the active theme (e.g. `"code-theme"`).
+ * @param themeSuffix - The filename suffix for the active theme (e.g. `"code-theme"`).
+ */
+const applyPlayerIconSrcs = (themeFolder: string, themeSuffix: string): void => {
   if (playerBlueImg) {
     playerBlueImg.src = `${base}img/${themeFolder}/blue-${themeSuffix}.svg`;
   }

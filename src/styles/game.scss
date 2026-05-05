@@ -26,7 +26,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: $spacing-lg $spacing-lg;
+  max-width: 1920px;
+  margin: $spacing-lg auto;
   padding: $spacing-md $spacing-lg;
   border-radius: 10px;
 }

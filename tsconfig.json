@@ -17,8 +17,9 @@
     /* Sonstiges */
     "esModuleInterop": true, // bessere Import-Kompatibilität
     "resolveJsonModule": true, // erlaubt `import data from './data.json'`
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
   },
-  "include": ["src"], // nur eigenen Code kompilieren
+  "include": ["src", "vite.config.ts"],
   "exclude": ["node_modules", "dist"] // keine Fremd- oder Build-Dateien prüfen
 }
