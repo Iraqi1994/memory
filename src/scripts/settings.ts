@@ -33,6 +33,9 @@ const labelMappings = {
   },
 };
 
+/** Updates the theme preview image based on the selected theme.
+ * @param theme - The selected theme value (`"codeTheme"` or `"gamingTheme"`).
+ */
 const updateThemePreview = (theme: string) => {
   if (theme === "codeTheme") {
     previewImage.src = import.meta.env.BASE_URL + "img/code-theme-preview.svg";
@@ -43,6 +46,7 @@ const updateThemePreview = (theme: string) => {
   }
 };
 
+/** Reflects the current selections in the summary labels and re-validates the form. */
 const updateSummary = () => {
   if (selections.theme) {
     summaryTheme.textContent = labelMappings.theme[selections.theme as keyof typeof labelMappings.theme];
@@ -57,6 +61,7 @@ const updateSummary = () => {
   validateSelections();
 };
 
+/** Enables the start button when all options are selected, otherwise disables it. */
 const validateSelections = () => {
   const allSelected = selections.theme && selections.player && selections.boardSize;
 
@@ -67,10 +72,12 @@ const validateSelections = () => {
   }
 };
 
+/** Persists the current selections object to `localStorage`. */
 const saveSelections = () => {
   localStorage.setItem("gameSettings", JSON.stringify(selections));
 };
 
+/** Resets all radio inputs, selections, summary labels, and the preview image to their default state. */
 const resetSettings = () => {
   themeRadios.forEach((radio) => (radio.checked = false));
   playerRadios.forEach((radio) => (radio.checked = false));
@@ -85,6 +92,7 @@ const resetSettings = () => {
   startButton.classList.add("button--disabled");
 };
 
+/** Reads any pre-checked radio inputs on page load and populates `selections` and the summary accordingly. */
 const initializeSelections = () => {
   const checkedTheme = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
   const checkedPlayer = document.querySelector<HTMLInputElement>('input[name="player"]:checked');

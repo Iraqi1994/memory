@@ -82,16 +82,21 @@ let backToGameButton: HTMLButtonElement | null = null;
 
 const base = import.meta.env.BASE_URL;
 
-function shuffle<T>(array: T[]): T[] {
+/** Shuffles an array in place using Fisher-Yates and returns a new shuffled copy.
+ * @param array - The array to shuffle.
+ * @returns A new shuffled array.
+ */
+const shuffle = <T>(array: T[]): T[] => {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
-}
+};
 
-function initDOMElements(): void {
+/** Queries and assigns all required DOM element references to module-level variables. */
+const initDOMElements = (): void => {
   fieldRef = document.querySelector<HTMLElement>("#field");
   currentPlayerImg = document.querySelector<HTMLImageElement>("#currentPlayerImg");
   scoreBlueEl = document.querySelector<HTMLElement>("#scoreBlue");
@@ -108,14 +113,16 @@ function initDOMElements(): void {
   exitPopupBackdrop = document.querySelector<HTMLElement>("#exitPopupBackdrop");
   exitPopup = document.querySelector<HTMLElement>("#exitPopup");
   backToGameButton = document.querySelector<HTMLButtonElement>("#backToGameButton");
-}
+};
 
-function loadSettings(): void {
+/** Loads game settings from `localStorage` into the `settings` variable. */
+const loadSettings = (): void => {
   const raw = localStorage.getItem("gameSettings");
   settings = raw ? JSON.parse(raw) : null;
-}
+};
 
-function createCards(): void {
+/** Creates and shuffles the full set of card pairs based on the current settings. */
+const createCards = (): void => {
   if (!settings) return;
   const isGaming = settings.theme === "gamingTheme";
   const pool = isGaming ? GAMING_THEME_CARDS : CODE_THEME_CARDS;
@@ -131,16 +138,18 @@ function createCards(): void {
       new Card(String(++idCounter), name, `${base}img/${folder}/${name}.svg`, backPath),
     ]),
   );
-}
+};
 
-function renderCards(): void {
+/** Sets the CSS grid column count and appends all card elements to the field. */
+const renderCards = (): void => {
   if (!fieldRef || !settings) return;
 
   fieldRef.style.setProperty("--grid-cols", String(GRID_COLS[settings.boardSize] ?? 4));
   cards.forEach((card) => fieldRef!.appendChild(card.render()));
-}
+};
 
-function updatePlayerIcons(): void {
+/** Sets the theme-correct icon for both player avatars and the current-player indicator. */
+const updatePlayerIcons = (): void => {
   if (!settings) return;
 
   const isGaming = settings.theme === "gamingTheme";
@@ -157,9 +166,10 @@ function updatePlayerIcons(): void {
     currentPlayerImg.src = `${base}img/${themeFolder}/${currentPlayer}-${themeSuffix}.svg`;
     currentPlayerImg.alt = currentPlayer === "blue" ? "Blue Player" : "Orange Player";
   }
-}
+};
 
-function updateCurrentPlayerDisplay(): void {
+/** Updates the current-player indicator image to reflect `currentPlayer` and the active theme. */
+const updateCurrentPlayerDisplay = (): void => {
   if (!currentPlayerImg || !settings) return;
 
   const isGaming = settings.theme === "gamingTheme";
@@ -168,14 +178,16 @@ function updateCurrentPlayerDisplay(): void {
 
   currentPlayerImg.src = `${base}img/${themeFolder}/${currentPlayer}-${themeSuffix}.svg`;
   currentPlayerImg.alt = currentPlayer === "blue" ? "Blue Player" : "Orange Player";
-}
+};
 
-function updateScores(): void {
+/** Renders the current blue and orange scores to the DOM. */
+const updateScores = (): void => {
   if (scoreBlueEl) scoreBlueEl.textContent = String(scores.blue);
   if (scoreOrangeEl) scoreOrangeEl.textContent = String(scores.orange);
-}
+};
 
-function handleMatch(): void {
+/** Marks both flipped cards as matched, increments the current player's score, and checks for game end. */
+const handleMatch = (): void => {
   flippedCards[0].setMatched(true);
   flippedCards[1].setMatched(true);
   scores[currentPlayer]++;
@@ -186,9 +198,10 @@ function handleMatch(): void {
   if (cards.every((c) => c.isMatched)) {
     setTimeout(() => showOverlay(), 400);
   }
-}
+};
 
-function handleMismatch(): void {
+/** Flips both non-matching cards back over and switches to the other player after a short delay. */
+const handleMismatch = (): void => {
   const [first, second] = flippedCards;
   flippedCards = [];
   setTimeout(() => {
@@ -198,61 +211,83 @@ function handleMismatch(): void {
     updateCurrentPlayerDisplay();
     isLocked = false;
   }, 1000);
-}
+};
 
-function showOverlay(): void {
+/** Configures the overlay for a draw result: sets the draw title and hides all images. */
+const setOverlayDrawState = (): void => {
+  if (overlayTitle) overlayTitle.textContent = "IT'S A DRAW!";
+  if (overlaySubtitle) overlaySubtitle.style.display = "none";
+  if (overlayTopImg) overlayTopImg.style.display = "none";
+  if (overlayWinnerImg) overlayWinnerImg.style.display = "none";
+};
+
+/** Shows the trophy image on the overlay for the gaming theme winner state. */
+const setOverlayGamingWinnerImages = (): void => {
+  if (overlayTopImg) overlayTopImg.style.display = "none";
+  if (overlayWinnerImg) {
+    overlayWinnerImg.src = `${base}img/gaming-theme/trophy.svg`;
+    overlayWinnerImg.alt = "Trophy";
+    overlayWinnerImg.style.display = "";
+  }
+};
+
+/** Shows the confetti and winner-specific image on the overlay for the code theme winner state.
+ * @param winner - The winning player colour (`"blue"` or `"orange"`).
+ */
+const setOverlayCodeWinnerImages = (winner: string): void => {
+  if (overlayTopImg) {
+    overlayTopImg.src = `${base}img/code-theme/confetti.svg`;
+    overlayTopImg.alt = "Confetti";
+    overlayTopImg.style.display = "";
+  }
+  if (overlayWinnerImg) {
+    overlayWinnerImg.src = `${base}img/code-theme/${winner}-winner-code-theme.svg`;
+    overlayWinnerImg.alt = `${winner} winner`;
+    overlayWinnerImg.style.display = "";
+  }
+};
+
+/** Sets the overlay title and delegates image setup to the theme-specific helper.
+ * @param winner - The winning player colour (`"blue"` or `"orange"`).
+ * @param isGaming - Whether the gaming theme is active.
+ */
+const setOverlayWinnerState = (winner: string, isGaming: boolean): void => {
+  if (!overlayTitle) return;
+  overlayTitle.textContent = `${winner.toUpperCase()} PLAYER`;
+  overlayTitle.classList.add(`game-overlay__title--${winner}`);
+  if (overlaySubtitle) overlaySubtitle.style.display = "";
+  if (isGaming) {
+    setOverlayGamingWinnerImages();
+  } else {
+    setOverlayCodeWinnerImages(winner);
+  }
+};
+
+/** Determines the game result and makes the end-game overlay visible. */
+const showOverlay = (): void => {
   if (!overlay || !overlayTitle || !settings) return;
-
   const isGaming = settings.theme === "gamingTheme";
   const isDraw = scores.blue === scores.orange;
   const winner = scores.blue > scores.orange ? "blue" : "orange";
-
-  if (overlaySubtitle) {
-    overlaySubtitle.style.display = isDraw ? "none" : "";
-  }
-
   overlayTitle.classList.remove("game-overlay__title--blue", "game-overlay__title--orange");
-
   if (isDraw) {
-    overlayTitle.textContent = "IT'S A DRAW!";
-    if (overlayTopImg) overlayTopImg.style.display = "none";
-    if (overlayWinnerImg) overlayWinnerImg.style.display = "none";
+    setOverlayDrawState();
   } else {
-    overlayTitle.textContent = `${winner.toUpperCase()} PLAYER`;
-    overlayTitle.classList.add(`game-overlay__title--${winner}`);
-
-    if (isGaming) {
-      if (overlayTopImg) overlayTopImg.style.display = "none";
-      if (overlayWinnerImg) {
-        overlayWinnerImg.src = `${base}img/gaming-theme/trophy.svg`;
-        overlayWinnerImg.alt = "Trophy";
-        overlayWinnerImg.style.display = "";
-      }
-    } else {
-      if (overlayTopImg) {
-        overlayTopImg.src = `${base}img/code-theme/confetti.svg`;
-        overlayTopImg.alt = "Confetti";
-        overlayTopImg.style.display = "";
-      }
-      if (overlayWinnerImg) {
-        overlayWinnerImg.src = `${base}img/code-theme/${winner}-winner-code-theme.svg`;
-        overlayWinnerImg.alt = `${winner} winner`;
-        overlayWinnerImg.style.display = "";
-      }
-    }
+    setOverlayWinnerState(winner, isGaming);
   }
-
   overlay.classList.add("game-overlay--visible");
-}
+};
 
-function showExitPopup(): void {
+/** Slides the exit-confirmation popup into view. */
+const showExitPopup = (): void => {
   if (!exitPopupBackdrop || !exitPopup) return;
   exitPopup.classList.remove("exit-popup--slide-out");
   exitPopupBackdrop.classList.add("exit-popup-backdrop--visible");
   exitPopup.classList.add("exit-popup--slide-in");
-}
+};
 
-function hideExitPopup(): void {
+/** Slides the exit-confirmation popup out of view and removes the backdrop after the animation ends. */
+const hideExitPopup = (): void => {
   if (!exitPopupBackdrop || !exitPopup) return;
   exitPopup.classList.remove("exit-popup--slide-in");
   exitPopup.classList.add("exit-popup--slide-out");
@@ -263,62 +298,59 @@ function hideExitPopup(): void {
     },
     { once: true },
   );
-}
+};
 
-function setupExitPopup(): void {
+/** Attaches click listeners to open/close the exit-confirmation popup. */
+const setupExitPopup = (): void => {
   if (!exitButton || !backToGameButton || !exitPopupBackdrop) return;
   exitButton.addEventListener("click", showExitPopup);
   backToGameButton.addEventListener("click", hideExitPopup);
   exitPopupBackdrop.addEventListener("click", (event) => {
     if (event.target === exitPopupBackdrop) hideExitPopup();
   });
-}
+};
 
-function setupExitButtonHover(): void {
+/** Swaps the exit button icon on hover based on the active theme. */
+const setupExitButtonHover = (): void => {
   if (!exitButton || !exitButtonImg || !settings) return;
-
   const isGaming = settings.theme === "gamingTheme";
   const defaultIcon = `${base}img/exit-game.svg`;
   const hoverIcon = isGaming ? `${base}img/exit-game-red.svg` : `${base}img/exit-game.svg`;
-
   exitButton.addEventListener("mouseenter", () => {
     if (exitButtonImg) {
       exitButtonImg.src = hoverIcon;
     }
   });
-
   exitButton.addEventListener("mouseleave", () => {
     if (exitButtonImg) {
       exitButtonImg.src = defaultIcon;
     }
   });
-}
+};
 
-function handleCardClick(event: Event): void {
+/** Handles a click on the card field: flips the target card and triggers match or mismatch logic.
+ * @param event - The click event from the card field.
+ */
+const handleCardClick = (event: Event): void => {
   if (isLocked) return;
-
   const cardElement = (event.target as HTMLElement).closest(".card") as HTMLButtonElement;
   if (!cardElement) return;
-
   const cardId = cardElement.dataset.cardId;
   const card = cards.find((c) => c.id === cardId);
   if (!card || card.isFlipped || card.isMatched) return;
-
   card.flip();
   flippedCards.push(card);
-
   if (flippedCards.length < 2) return;
-
   isLocked = true;
-
   if (flippedCards[0].value === flippedCards[1].value) {
     handleMatch();
   } else {
     handleMismatch();
   }
-}
+};
 
-function init(): void {
+/** Bootstraps the game: loads settings, builds the board, and wires up all event listeners. */
+const init = (): void => {
   loadSettings();
   if (!settings) return;
   initDOMElements();
@@ -332,6 +364,6 @@ function init(): void {
   setupExitButtonHover();
   setupExitPopup();
   fieldRef.addEventListener("click", handleCardClick);
-}
+};
 
 init();
