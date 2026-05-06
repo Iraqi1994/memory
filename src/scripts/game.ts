@@ -125,6 +125,22 @@ const loadSettings = (): void => {
   settings = raw ? JSON.parse(raw) : null;
 };
 
+/** Creates a shuffled array of card pairs from the given names, folder, and back image path.
+ * @param selected - The card names to create pairs from.
+ * @param folder - The image sub-folder for the active theme (e.g. `"code-theme"`).
+ * @param backPath - The full path to the card-back image.
+ * @returns A shuffled array of `Card` pairs.
+ */
+const shuffleCards = (selected: string[], folder: string, backPath: string): Card[] => {
+  let idCounter = 0;
+  return shuffle(
+    selected.flatMap((name) => [
+      new Card(String(++idCounter), name, `${base}img/${folder}/${name}.svg`, backPath),
+      new Card(String(++idCounter), name, `${base}img/${folder}/${name}.svg`, backPath),
+    ]),
+  );
+};
+
 /** Creates and shuffles the full set of card pairs based on the current settings. */
 const createCards = (): void => {
   if (!settings) return;
@@ -135,13 +151,7 @@ const createCards = (): void => {
   const backPath = `${base}img/${folder}/${backName}.svg`;
   const pairsNeeded = Number(settings.boardSize) / 2;
   const selected = shuffle(pool).slice(0, pairsNeeded);
-  let idCounter = 0;
-  cards = shuffle(
-    selected.flatMap((name) => [
-      new Card(String(++idCounter), name, `${base}img/${folder}/${name}.svg`, backPath),
-      new Card(String(++idCounter), name, `${base}img/${folder}/${name}.svg`, backPath),
-    ]),
-  );
+  cards = shuffleCards(selected, folder, backPath);
 };
 
 /** Sets the CSS grid column count and appends all card elements to the field. */
@@ -345,14 +355,10 @@ const setupExitButtonHover = (): void => {
   const defaultIcon = `${base}img/exit-game.svg`;
   const hoverIcon = isGaming ? `${base}img/exit-game-red.svg` : `${base}img/exit-game.svg`;
   exitButton.addEventListener("mouseenter", () => {
-    if (exitButtonImg) {
-      exitButtonImg.src = hoverIcon;
-    }
+    if (exitButtonImg) exitButtonImg.src = hoverIcon;
   });
   exitButton.addEventListener("mouseleave", () => {
-    if (exitButtonImg) {
-      exitButtonImg.src = defaultIcon;
-    }
+    if (exitButtonImg) exitButtonImg.src = defaultIcon;
   });
 };
 
