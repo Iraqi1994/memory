@@ -6,7 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="/img/gaming-theme/card-back-gaming-theme.svg" />
     <title>Memory</title>
   </head>
-  <body>
+  <body onload="init()">
     <div class="settings-container">
       <div class="settings-forms">
         <h1>Settings</h1>
@@ -80,7 +80,7 @@
             <span id="summary-boardSize">Board Size</span>
           </div>
 
-          <a href="../pages/game.html" id="start-button" class="button button--disabled">
+          <a href="../pages/game.html" id="start-button" class="button button--disabled" onclick="handleStartButtonClick(event)">
             <img src="/img/smart-display.svg" alt="" class="button__icon button__icon--start" />
             <span class="button__text">Start</span>
           </a>
@@ -88,6 +88,10 @@
       </div>
     </div>
 
-    <script type="module" src="../scripts/settings.ts"></script>
+    <script type="module">
+      import { init, handleStartButtonClick } from "../scripts/settings.ts";
+      window.init = init;
+      window.handleStartButtonClick = handleStartButtonClick;
+    </script>
   </body>
 </html>

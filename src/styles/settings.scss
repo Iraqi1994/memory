@@ -150,7 +150,8 @@ form {
       border: 2px solid #303131;
     }
 
-    &:checked::before {
+    &:checked::before,
+    &:hover::before {
       content: "";
       position: absolute;
       top: 50%;

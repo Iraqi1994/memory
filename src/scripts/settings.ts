@@ -109,34 +109,43 @@ const initializeSelections = () => {
   updateSummary();
 };
 
-themeRadios.forEach((radio) => {
-  radio.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    updateThemePreview(target.value);
-    selections.theme = target.value;
-    updateSummary();
-  });
-});
+/** Handles theme radio change — updates the preview image and selections. */
+const handleThemeChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  updateThemePreview(target.value);
+  selections.theme = target.value;
+  updateSummary();
+};
 
-playerRadios.forEach((radio) => {
-  radio.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    selections.player = target.value;
-    updateSummary();
-  });
-});
+/** Handles player radio change — updates the selected player in selections. */
+const handlePlayerChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  selections.player = target.value;
+  updateSummary();
+};
 
-boardSizeRadios.forEach((radio) => {
-  radio.addEventListener("change", (event) => {
-    const target = event.target as HTMLInputElement;
-    selections.boardSize = target.value;
-    updateSummary();
-  });
-});
+/** Handles board size radio change — updates the selected board size in selections. */
+const handleBoardSizeChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  selections.boardSize = target.value;
+  updateSummary();
+};
 
-startButton.addEventListener("click", () => {
+/** Registers change event listeners on all radio input groups. */
+const registerEventListeners = () => {
+  themeRadios.forEach((radio) => radio.addEventListener("change", handleThemeChange));
+  playerRadios.forEach((radio) => radio.addEventListener("change", handlePlayerChange));
+  boardSizeRadios.forEach((radio) => radio.addEventListener("change", handleBoardSizeChange));
+};
+
+/** Handles the start button click — saves selections to `localStorage` and resets the form. */
+export const handleStartButtonClick = (event: MouseEvent) => {
   saveSelections();
   resetSettings();
-});
+};
 
-initializeSelections();
+/** Initializes the settings page by registering listeners and loading any pre-existing state. */
+export const init = () => {
+  registerEventListeners();
+  initializeSelections();
+};

@@ -20,6 +20,7 @@ $transition-duration: 0.15s;
 
 body {
   background-color: $color-background;
+  margin: 0;
 }
 
 header {
@@ -188,9 +189,71 @@ header {
   }
 }
 
+.game-over-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: #303131;
+  justify-content: center;
+  align-items: center;
+  z-index: 150;
+
+  &--visible {
+    display: flex;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__title-wrapper {
+    position: relative;
+    line-height: 1;
+  }
+
+  &__title--back {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    font-size: 128px;
+    font-weight: bold;
+    color: $color-white;
+    z-index: 0;
+  }
+
+  &__title--front {
+    position: relative;
+    font-size: 128px;
+    font-weight: bold;
+    color: #4dd5bc;
+    z-index: 1;
+  }
+
+  &__final-score-label {
+    color: $color-white;
+    font-size: 26px;
+    font-weight: bold;
+  }
+}
+
 body[data-theme="gamingTheme"] {
   background-color: #294f60;
   font-family: "Orbitron", sans-serif;
+
+  .game-over-overlay {
+    background-color: #294f5f;
+
+    &__title--back {
+      display: none;
+    }
+
+    &__title--front {
+      color: #ed1b76;
+    }
+  }
 
   .game-overlay {
     background-color: #294f5f;

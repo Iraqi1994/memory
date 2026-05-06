@@ -63,25 +63,29 @@ let flippedCards: Card[] = [];
 let isLocked = false;
 
 let settings: GameSettings | null = null;
-let fieldRef: HTMLElement | null = null;
-let currentPlayerImg: HTMLImageElement | null = null;
-let scoreBlueEl: HTMLElement | null = null;
-let scoreOrangeEl: HTMLElement | null = null;
-let overlay: HTMLElement | null = null;
-let overlayTitle: HTMLElement | null = null;
-let overlaySubtitle: HTMLElement | null = null;
-let overlayTopImg: HTMLImageElement | null = null;
-let overlayWinnerImg: HTMLImageElement | null = null;
-let playerBlueImg: HTMLImageElement | null = null;
-let playerOrangeImg: HTMLImageElement | null = null;
-let exitButton: HTMLButtonElement | null = null;
-let exitButtonImg: HTMLImageElement | null = null;
-let overlayDraw: HTMLElement | null = null;
-let overlayDrawIcon: HTMLImageElement | null = null;
-let exitPopupBackdrop: HTMLElement | null = null;
-let exitPopup: HTMLElement | null = null;
-let backToGameButton: HTMLButtonElement | null = null;
-
+const fieldRef = document.querySelector<HTMLElement>("#field");
+const currentPlayerImg = document.querySelector<HTMLImageElement>("#currentPlayerImg");
+const scoreBlueEl = document.querySelector<HTMLElement>("#scoreBlue");
+const scoreOrangeEl = document.querySelector<HTMLElement>("#scoreOrange");
+const overlay = document.querySelector<HTMLElement>("#gameOverlay");
+const overlayTitle = document.querySelector<HTMLElement>("#overlayTitle");
+const overlaySubtitle = document.querySelector<HTMLElement>("#overlaySubtitle");
+const overlayTopImg = document.querySelector<HTMLImageElement>("#overlayTopImg");
+const overlayWinnerImg = document.querySelector<HTMLImageElement>("#overlayWinnerImg");
+const playerBlueImg = document.querySelector<HTMLImageElement>(".player-blue img");
+const playerOrangeImg = document.querySelector<HTMLImageElement>(".player-orange img");
+const exitButton = document.querySelector<HTMLButtonElement>("header .button");
+const exitButtonImg = exitButton?.querySelector<HTMLImageElement>("img") ?? null;
+const overlayDraw = document.querySelector<HTMLElement>("#overlayDraw");
+const overlayDrawIcon = document.querySelector<HTMLImageElement>("#overlayDrawIcon");
+const exitPopupBackdrop = document.querySelector<HTMLElement>("#exitPopupBackdrop");
+const exitPopup = document.querySelector<HTMLElement>("#exitPopup");
+const backToGameButton = document.querySelector<HTMLButtonElement>("#backToGameButton");
+const gameOverOverlay = document.querySelector<HTMLElement>("#gameOverOverlay");
+const gameOverBlueImg = document.querySelector<HTMLImageElement>("#gameOverBlueImg");
+const gameOverOrangeImg = document.querySelector<HTMLImageElement>("#gameOverOrangeImg");
+const gameOverScoreBlueEl = document.querySelector<HTMLElement>("#gameOverScoreBlue");
+const gameOverScoreOrangeEl = document.querySelector<HTMLElement>("#gameOverScoreOrange");
 const base = import.meta.env.BASE_URL;
 
 /** Shuffles an array in place using Fisher-Yates and returns a new shuffled copy.
@@ -95,28 +99,6 @@ const shuffle = <T>(array: T[]): T[] => {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
-};
-
-/** Queries and assigns all required DOM element references to module-level variables. */
-const initDOMElements = (): void => {
-  fieldRef = document.querySelector<HTMLElement>("#field");
-  currentPlayerImg = document.querySelector<HTMLImageElement>("#currentPlayerImg");
-  scoreBlueEl = document.querySelector<HTMLElement>("#scoreBlue");
-  scoreOrangeEl = document.querySelector<HTMLElement>("#scoreOrange");
-  overlay = document.querySelector<HTMLElement>("#gameOverlay");
-  overlayTitle = document.querySelector<HTMLElement>("#overlayTitle");
-  overlaySubtitle = document.querySelector<HTMLElement>("#overlaySubtitle");
-  overlayTopImg = document.querySelector<HTMLImageElement>("#overlayTopImg");
-  overlayWinnerImg = document.querySelector<HTMLImageElement>("#overlayWinnerImg");
-  playerBlueImg = document.querySelector<HTMLImageElement>(".player-blue img");
-  playerOrangeImg = document.querySelector<HTMLImageElement>(".player-orange img");
-  exitButton = document.querySelector<HTMLButtonElement>("header .button");
-  exitButtonImg = exitButton?.querySelector<HTMLImageElement>("img") ?? null;
-  overlayDraw = document.querySelector<HTMLElement>("#overlayDraw");
-  overlayDrawIcon = document.querySelector<HTMLImageElement>("#overlayDrawIcon");
-  exitPopupBackdrop = document.querySelector<HTMLElement>("#exitPopupBackdrop");
-  exitPopup = document.querySelector<HTMLElement>("#exitPopup");
-  backToGameButton = document.querySelector<HTMLButtonElement>("#backToGameButton");
 };
 
 /** Loads game settings from `localStorage` into the `settings` variable. */
@@ -206,6 +188,27 @@ const updateScores = (): void => {
   if (scoreOrangeEl) scoreOrangeEl.textContent = String(scores.orange);
 };
 
+/** Shows the Game Over screen for 4 seconds, then transitions to the winner/draw overlay. */
+const showGameOverScreen = (): void => {
+  if (!gameOverOverlay || !settings) return;
+  const isGaming = settings.theme === "gamingTheme";
+  const themeFolder = isGaming ? "gaming-theme" : "code-theme";
+  const themeSuffix = isGaming ? "gaming-theme" : "code-theme";
+  if (gameOverBlueImg) {
+    gameOverBlueImg.src = `${base}img/${themeFolder}/blue-${themeSuffix}.svg`;
+  }
+  if (gameOverOrangeImg) {
+    gameOverOrangeImg.src = `${base}img/${themeFolder}/orange-${themeSuffix}.svg`;
+  }
+  if (gameOverScoreBlueEl) gameOverScoreBlueEl.textContent = String(scores.blue);
+  if (gameOverScoreOrangeEl) gameOverScoreOrangeEl.textContent = String(scores.orange);
+  gameOverOverlay.classList.add("game-over-overlay--visible");
+  setTimeout(() => {
+    gameOverOverlay!.classList.remove("game-over-overlay--visible");
+    showOverlay();
+  }, 4000);
+};
+
 /** Marks both flipped cards as matched, increments the current player's score, and checks for game end. */
 const handleMatch = (): void => {
   flippedCards[0].setMatched(true);
@@ -216,7 +219,7 @@ const handleMatch = (): void => {
   isLocked = false;
 
   if (cards.every((c) => c.isMatched)) {
-    setTimeout(() => showOverlay(), 400);
+    setTimeout(() => showGameOverScreen(), 400);
   }
 };
 
@@ -384,10 +387,9 @@ const handleCardClick = (event: Event): void => {
 };
 
 /** Bootstraps the game: loads settings, builds the board, and wires up all event listeners. */
-const init = (): void => {
+export const init = (): void => {
   loadSettings();
   if (!settings) return;
-  initDOMElements();
   if (!fieldRef) return;
   document.body.dataset.theme = settings.theme;
   currentPlayer = settings.player;
@@ -399,5 +401,3 @@ const init = (): void => {
   setupExitPopup();
   fieldRef.addEventListener("click", handleCardClick);
 };
-
-init();
