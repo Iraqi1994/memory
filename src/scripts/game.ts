@@ -76,6 +76,8 @@ let playerBlueImg: HTMLImageElement | null = null;
 let playerOrangeImg: HTMLImageElement | null = null;
 let exitButton: HTMLButtonElement | null = null;
 let exitButtonImg: HTMLImageElement | null = null;
+let overlayDraw: HTMLElement | null = null;
+let overlayDrawIcon: HTMLImageElement | null = null;
 let exitPopupBackdrop: HTMLElement | null = null;
 let exitPopup: HTMLElement | null = null;
 let backToGameButton: HTMLButtonElement | null = null;
@@ -110,6 +112,8 @@ const initDOMElements = (): void => {
   playerOrangeImg = document.querySelector<HTMLImageElement>(".player-orange img");
   exitButton = document.querySelector<HTMLButtonElement>("header .button");
   exitButtonImg = exitButton?.querySelector<HTMLImageElement>("img") ?? null;
+  overlayDraw = document.querySelector<HTMLElement>("#overlayDraw");
+  overlayDrawIcon = document.querySelector<HTMLImageElement>("#overlayDrawIcon");
   exitPopupBackdrop = document.querySelector<HTMLElement>("#exitPopupBackdrop");
   exitPopup = document.querySelector<HTMLElement>("#exitPopup");
   backToGameButton = document.querySelector<HTMLButtonElement>("#backToGameButton");
@@ -219,12 +223,19 @@ const handleMismatch = (): void => {
   }, 1000);
 };
 
-/** Configures the overlay for a draw result: sets the draw title and hides all images. */
+/** Configures the overlay for a draw result: shows the draw group and hides all winner elements. */
 const setOverlayDrawState = (): void => {
-  if (overlayTitle) overlayTitle.textContent = "IT'S A DRAW!";
+  if (overlayTitle) overlayTitle.style.display = "none";
   if (overlaySubtitle) overlaySubtitle.style.display = "none";
   if (overlayTopImg) overlayTopImg.style.display = "none";
   if (overlayWinnerImg) overlayWinnerImg.style.display = "none";
+  if (overlayDraw) overlayDraw.style.display = "flex";
+  if (overlayDrawIcon && settings) {
+    const isGaming = settings.theme === "gamingTheme";
+    overlayDrawIcon.src = isGaming
+      ? `${base}img/gaming-theme/draw-icon-gaming-theme.svg`
+      : `${base}img/code-theme/draw-icon-code-theme.svg`;
+  }
 };
 
 /** Shows the trophy image on the overlay for the gaming theme winner state. */
@@ -269,6 +280,17 @@ const setOverlayWinnerState = (winner: string, isGaming: boolean): void => {
   }
 };
 
+/** Hides the draw group and restores the winner elements, then delegates to the theme-specific winner helper.
+ * @param winner - The winning player colour (`"blue"` or `"orange"`).
+ * @param isGaming - Whether the gaming theme is active.
+ */
+const setOverlayWinnerDisplay = (winner: string, isGaming: boolean): void => {
+  if (overlayDraw) overlayDraw.style.display = "none";
+  if (overlayTitle) overlayTitle.style.display = "";
+  if (overlaySubtitle) overlaySubtitle.style.display = "";
+  setOverlayWinnerState(winner, isGaming);
+};
+
 /** Determines the game result and makes the end-game overlay visible. */
 const showOverlay = (): void => {
   if (!overlay || !overlayTitle || !settings) return;
@@ -279,7 +301,7 @@ const showOverlay = (): void => {
   if (isDraw) {
     setOverlayDrawState();
   } else {
-    setOverlayWinnerState(winner, isGaming);
+    setOverlayWinnerDisplay(winner, isGaming);
   }
   overlay.classList.add("game-overlay--visible");
 };

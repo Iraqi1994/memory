@@ -146,6 +146,46 @@ header {
   &__winner-img {
     height: 160px;
   }
+
+  &__draw {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__draw-subtitle {
+    font-size: 40px;
+    font-weight: bold;
+    color: $color-white;
+  }
+
+  &__draw-title-wrapper {
+    position: relative;
+    line-height: 1;
+  }
+
+  &__draw-title--back {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    font-size: 128px;
+    font-weight: bold;
+    color: $color-white;
+    z-index: 0;
+  }
+
+  &__draw-title--front {
+    position: relative;
+    font-size: 128px;
+    font-weight: bold;
+    color: #4dd5bc;
+    z-index: 1;
+  }
+
+  &__draw-icon {
+    height: 260px;
+  }
 }
 
 body[data-theme="gamingTheme"] {
@@ -163,6 +203,14 @@ body[data-theme="gamingTheme"] {
       &--orange {
         color: #ea6900;
       }
+    }
+
+    &__draw-title--front {
+      color: #ed1b76;
+    }
+
+    &__draw-title--back {
+      display: none;
     }
   }
 
