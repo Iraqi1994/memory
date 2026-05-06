@@ -88,6 +88,23 @@ npm install
 | Preview build    | `npm run preview` | Serves the production build locally            |
 | Generate docs    | `npm run docs`    | Runs TypeDoc and outputs to `docs/`            |
 
+#### Details
+
+**`npm run dev`**
+Starts the Vite development server at `http://localhost:5173` (default). Hot Module Replacement (HMR) applies CSS and script changes instantly without a full page reload.
+
+**`npm run build`**
+Runs in two steps:
+
+1. `tsc -noEmit` — type-checks the entire project without emitting any files; the build aborts on type errors.
+2. `vite build` — bundles all three entry points (`index.html`, `src/pages/settings.html`, `src/pages/game.html`) into `dist/` with the base path `/memory/`.
+
+**`npm run preview`**
+Serves the contents of `dist/` locally so you can verify the production build before deploying. Requires `npm run build` to have been run first.
+
+**`npm run docs`**
+Runs TypeDoc with `--entryPointStrategy expand` across the entire `src/` directory and writes the generated API documentation to `docs/`. Open `docs/index.html` in a browser to browse it.
+
 ---
 
 ## How to Play
